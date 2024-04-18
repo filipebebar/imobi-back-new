@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  imobi-back:
+    container_name: imobi_api
+    ports:
+      - '3001:3001'
+    build: .
+    volumes:
+      - .:/home/imobi-back-new
+      - /home/imobi-back-new/node_modules
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  postgres:
+    container_name: imobi_db
+    image: postgres
+    environment:
+      POSTGRES_DB: imobi_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5537:5432'
+    networks:
+      - my-networks
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  postgress:
+
+networks:
+  my-networks:
+    driver: bridge
